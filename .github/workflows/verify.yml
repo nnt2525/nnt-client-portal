@@ -1,0 +1,41 @@
+name: Verify full-stack portal
+on:
+  push:
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm run install:ci
+      - run: npm run setup:local
+      - run: npm run typecheck
+      - run: npm run build
+      - run: npm run db:migrate
+      - name: Verify API and persistence
+        env:
+          BASE_URL: http://127.0.0.1:8787
+        run: |
+          npm start -- --port 8787 > worker.log 2>&1 &
+          PORTAL_PID=$!
+          trap 'kill "$PORTAL_PID" 2>/dev/null || true' EXIT
+          for attempt in $(seq 1 60); do
+            if curl --fail --silent http://127.0.0.1:8787/api/auth/ok > /dev/null; then
+              break
+            fi
+            sleep 1
+          done
+          npm run test:integration
+      - name: Keep failure diagnostics
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: worker-diagnostics
+          path: worker.log
