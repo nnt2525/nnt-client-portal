@@ -8,7 +8,7 @@ A freelance studio workspace for turning a client brief into visible progress, s
 
 ![NNT Client Portal dashboard](docs/images/dashboard.png)
 
-The GitHub source is public and the full application runs locally. Online hosting is pending explicit approval for a separate hosting destination. A private Sites target has been prepared but has not been published. An application invitation cannot bypass a host's access policy.
+The GitHub source is public and the full application runs locally. The Sites demo uses an owner-only hosting policy: open it with the owning ChatGPT account, then use the portal's own sign-in. An application invitation cannot bypass the hosting policy. See the repository's Website link for the hosted demo when available.
 
 Built as one complete portfolio project: a responsive React interface, a TypeScript API, database migrations, session authentication, project permissions, and private file storage. The visual direction uses charcoal, warm ivory, lime, and lavender.
 
